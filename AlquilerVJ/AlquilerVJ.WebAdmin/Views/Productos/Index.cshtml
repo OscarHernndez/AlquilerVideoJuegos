@@ -1,0 +1,69 @@
+﻿@model IEnumerable<AlquilerVJ.BL.Producto>
+
+@{
+    ViewBag.Title = "Productos";
+}
+
+<h2>Productos</h2>
+
+<p>
+    @Html.ActionLink("Nuevo Producto", "Crear")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Categoria)
+        </th>
+        <th>
+            Cantidad
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Precio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UrlImagen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Disponible)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Categoria.Descripcion)
+        </td>
+         <td>
+            @Html.DisplayFor(modelItem => item.cantidad)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Precio)
+        </td>
+        <td>
+            @if (item.UrlImagen == null)
+            {
+               <h5 style="color:red"  >Sin imagen</h5>
+            }else
+            {
+            <img src="@item.UrlImagen" alt="@item.Descripcion" style="max-width:100px; height:auto;" />
+            }
+           
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Disponible)
+        </td>
+        <td>
+            @Html.ActionLink("Editar", "Editar", new { id=item.Id }) |
+            @Html.ActionLink("Detalles", "Detalles", new { id=item.Id }) |
+            @Html.ActionLink("Eliminar", "Eliminar", new { id=item.Id })
+        </td>
+    </tr>
+}
+</table>
