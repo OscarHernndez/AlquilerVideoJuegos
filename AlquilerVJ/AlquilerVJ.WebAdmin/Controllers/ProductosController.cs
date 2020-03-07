@@ -37,13 +37,6 @@ namespace AlquilerVJ.WebAdmin.Controllers
             
         }
 
-        private string GuardarImagen(HttpPostedFileBase imagen)
-        {
-            string path = Server.MapPath("~/Imagenes/" + imagen.FileName);
-            imagen.SaveAs(path);
-
-            return "/Imagenes/" + imagen.FileName;
-        }
 
         [HttpPost]
         public ActionResult Crear(Producto producto, HttpPostedFileBase imagen)
@@ -52,8 +45,12 @@ namespace AlquilerVJ.WebAdmin.Controllers
             {
                 if (producto.CategoriaId == 0)
                 {
-                    ModelState.AddModelError("CategoriaId", "Seleccione una categoria");
+                    ModelState.AddModelError("CategoriaId", "Seleccione una categoria");//el generador de lista de categorias
                     return View(producto);
+                }
+                if (imagen != null)  //si el valor de la imagen no esta nulo,  guarda la imagen 
+                {
+                    producto.UrlImagen = GuardarImagen(imagen);//----
                 }
                 _ProductosBL.GuardarProducto(producto);
                 return RedirectToAction("Index");
@@ -63,6 +60,16 @@ namespace AlquilerVJ.WebAdmin.Controllers
 
                 return View(producto);
         }
+
+
+        private string GuardarImagen(HttpPostedFileBase imagen)
+        {
+            string path = Server.MapPath("~/Imagenes/" + imagen.FileName);//el encargago de guardar la imagen en la carpeta "Imagenes"
+            imagen.SaveAs(path);
+
+            return "/Imagenes/" + imagen.FileName;
+        }
+
 
 
         public ActionResult Editar(int id)
@@ -76,10 +83,11 @@ namespace AlquilerVJ.WebAdmin.Controllers
         }
 
 
+
         [HttpPost]
         public ActionResult Editar(Producto producto, HttpPostedFileBase imagen)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) 
             {
                 if (producto.CategoriaId == 0)
                 {
@@ -87,16 +95,16 @@ namespace AlquilerVJ.WebAdmin.Controllers
                     return View(producto);
                 }
 
+                if (imagen != null)//si el valor de imagen es nula, no la edita
+                {
+                    producto.UrlImagen = GuardarImagen(imagen);
+                }
+
                 _ProductosBL.GuardarProducto(producto);
                 return RedirectToAction("Index");
             }
             var categorias = _CategoriasBL.ObtenerCategorias();
             ViewBag.CategoriaId = new SelectList(categorias, "Id", "Descripcion");
-
-            if (imagen != null)
-            {
-                producto.UrlImagen = GuardarImagen(imagen);
-            }
 
             return View(producto);
         }
